@@ -1,3 +1,15 @@
+[comment]: # "Auto-generated SOAR connector documentation"
+# Agari
+
+Publisher: Agari  
+Connector Version: 1\.0\.2  
+Product Vendor: Agari  
+Product Name: Agari  
+Product Version Supported (regex): "\.\*"  
+Minimum Product Version: 4\.9\.39220  
+
+This app integrates with Agari to implement the investigative and generic actions that protect against phishing and Business Email Compromise \(BEC\) attacks
+
 [comment]: # " File: readme.md"
 [comment]: # ""
 [comment]: # "    Copyright (c) Agari, 2021"
@@ -689,3 +701,303 @@ test connectivity action are Client ID and Client Secret.
               
             **Note:** Max Results value will be handled internally which will paginate through the
             policy events.
+
+
+### Configuration Variables
+The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a Agari asset in SOAR.
+
+VARIABLE | REQUIRED | TYPE | DESCRIPTION
+-------- | -------- | ---- | -----------
+**client\_id** |  required  | string | Client ID
+**client\_secret** |  required  | password | Client Secret
+**sort** |  required  | string | Sort the result data set based on the 'created\_at' field
+**start\_date** |  optional  | string | The initial start date for ingestion\. The start date should be within the last two weeks
+**add\_fields** |  optional  | string | Fields to add to the default message payload \(allows comma\-delimited string\)
+**filter** |  optional  | string | Filtering the policy events based on the search filters \(allows multiple filters using and/or conjunctions\)
+**policy\_name** |  optional  | string | Find by the policy name while fetching the policy events
+**policy\_action** |  optional  | string | Find by the policy action while fetching the policy events
+**policy\_enabled** |  optional  | string | Find by the policies enabled while fetching the policy events
+**exclude\_alert\_types** |  optional  | string | Exclude the alert type while fetching the policy events
+**cef\_mapping** |  optional  | string | JSON dictionary represented as a serialized JSON string\. Each key in the dictionary is a potential key name in the message artifact that is to be renamed to the value
+**max\_results** |  optional  | numeric | Maximum number of results to ingest\. The default value is 100
+**max\_workers\_for\_polling** |  optional  | numeric | Maximum number of workers to use while fetching the results from the Agari Server\. The default value is 1
+
+### Supported Actions  
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for test connectivity using supplied configuration  
+[list policy events](#action-list-policy-events) - List all the policy events  
+[get policy event](#action-get-policy-event) - Fetches a single policy event from Agari for the given policy event ID  
+[list messages](#action-list-messages) - List all the messages  
+[get message](#action-get-message) - Fetches a single message from Agari for the given message ID  
+[remediate message](#action-remediate-message) - Deletes or moves a message from the inbox for the provided message ID  
+[on poll](#action-on-poll) - Action handler for the on poll ingest functionality  
+
+## action: 'test connectivity'
+Validate the asset configuration for test connectivity using supplied configuration
+
+Type: **test**  
+Read only: **True**
+
+#### Action Parameters
+No parameters are required for this action
+
+#### Action Output
+No Output  
+
+## action: 'list policy events'
+List all the policy events
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**max\_results** |  optional  | Max number of policy events to return\. The default value is 100 | numeric | 
+**offset** |  optional  | This parameter allows the user to set the starting point or offset for the response\. The default value is 0 | numeric | 
+**sort** |  optional  | A comma\-delimited string that specifies the field ordering \(with direction\) to be applied to the response | string | 
+**rem\_fields** |  optional  | A comma\-delimited list of fields to remove from the default payload | string | 
+**add\_fields** |  optional  | A comma\-delimited list of optional fields to add to the default payload | string | 
+**filter** |  optional  | Search filters that can be applied to the response | string | 
+**fields** |  optional  | A comma\-delimited list of fields to include in the payload | string | 
+**start\_date** |  optional  | The earliest date time \(UTC\) a search should target \(ISO 8601 format\) | string | 
+**end\_date** |  optional  | The latest date time \(UTC\) a search should target \(ISO 8601 format\) | string | 
+**policy\_name** |  optional  | Find by policy name | string |  `agari policy name` 
+**policy\_action** |  optional  | Find by policy action\. Valid values are deliver, move, inbox, delete, none, and all | string | 
+**policy\_enabled** |  optional  | Find by enabled policies | string | 
+**exclude\_alert\_types** |  optional  | Exclude Policy types\. Valid values are MessageAlert, SystemAlert, and None | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS
+--------- | ---- | --------
+action\_result\.status | string | 
+action\_result\.parameter\.add\_fields | string | 
+action\_result\.parameter\.end\_date | string | 
+action\_result\.parameter\.exclude\_alert\_types | string | 
+action\_result\.parameter\.fields | string | 
+action\_result\.parameter\.filter | string | 
+action\_result\.parameter\.max\_results | numeric | 
+action\_result\.parameter\.offset | numeric | 
+action\_result\.parameter\.policy\_action | string | 
+action\_result\.parameter\.policy\_enabled | string | 
+action\_result\.parameter\.policy\_name | string |  `agari policy name` 
+action\_result\.parameter\.rem\_fields | string | 
+action\_result\.parameter\.sort | string | 
+action\_result\.parameter\.start\_date | string | 
+action\_result\.data\.\*\.alert\_definition\_name | string |  `agari policy name` 
+action\_result\.data\.\*\.created\_at | string | 
+action\_result\.data\.\*\.id | numeric |  `agari policy event id` 
+action\_result\.data\.\*\.notified\_original\_recipients | boolean | 
+action\_result\.data\.\*\.policy\_action | string | 
+action\_result\.data\.\*\.policy\_enabled | boolean | 
+action\_result\.data\.\*\.summary | boolean | 
+action\_result\.data\.\*\.updated\_at | string | 
+action\_result\.summary\.total\_policy\_events | numeric | 
+action\_result\.message | string | 
+summary\.total\_objects | numeric | 
+summary\.total\_objects\_successful | numeric |   
+
+## action: 'get policy event'
+Fetches a single policy event from Agari for the given policy event ID
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** |  required  | Policy Event ID | numeric |  `agari policy event id` 
+**rem\_fields** |  optional  | A comma\-delimited list of fields to remove from the default payload | string | 
+**add\_fields** |  optional  | A comma\-delimited list of optional fields to add to the default payload | string | 
+**fields** |  optional  | A comma\-delimited list of fields to include in the payload | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS
+--------- | ---- | --------
+action\_result\.status | string | 
+action\_result\.parameter\.add\_fields | string | 
+action\_result\.parameter\.fields | string | 
+action\_result\.parameter\.id | numeric |  `agari policy event id` 
+action\_result\.parameter\.rem\_fields | string | 
+action\_result\.data\.\*\.alert\_event\.collector\_message\_id | string |  `agari internal message id` 
+action\_result\.data\.\*\.alert\_event\.conditions\.message\_trust\_score\_max | numeric | 
+action\_result\.data\.\*\.alert\_event\.conditions\.message\_trust\_score\_min | numeric | 
+action\_result\.data\.\*\.alert\_event\.created\_at | string | 
+action\_result\.data\.\*\.alert\_event\.id | numeric |  `agari policy event id` 
+action\_result\.data\.\*\.alert\_event\.links\.messages | string |  `url` 
+action\_result\.data\.\*\.alert\_event\.message\_details\.date | string | 
+action\_result\.data\.\*\.alert\_event\.message\_details\.from | string | 
+action\_result\.data\.\*\.alert\_event\.message\_details\.subject | string | 
+action\_result\.data\.\*\.alert\_event\.message\_details\.to | string |  `email` 
+action\_result\.data\.\*\.alert\_event\.message\_details\.trust\_score | numeric | 
+action\_result\.data\.\*\.alert\_event\.policy\_name | string |  `agari policy name` 
+action\_result\.data\.\*\.code | numeric | 
+action\_result\.data\.\*\.status | string | 
+action\_result\.data\.\*\.version | numeric | 
+action\_result\.summary | string | 
+action\_result\.message | string | 
+summary\.total\_objects | numeric | 
+summary\.total\_objects\_successful | numeric |   
+
+## action: 'list messages'
+List all the messages
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**max\_results** |  optional  | Max number of messages to return\. The default value is 100 | numeric | 
+**offset** |  optional  | The offset, or starting point, for the paged response\. The default value is 0 | numeric | 
+**sort** |  optional  | A comma\-delimited string that specifies the field ordering \(with direction\) to be applied to the response | string | 
+**rem\_fields** |  optional  | A comma\-delimited list of fields to remove from the default payload | string | 
+**add\_fields** |  optional  | A comma\-delimited list of optional fields to add to the default payload | string | 
+**fields** |  optional  | A comma\-delimited list of fields to include in the payload | string | 
+**search** |  optional  | Search using the advanced search syntax | string | 
+**start\_date** |  optional  | The earliest date time \(UTC\) a search should target \(ISO 8601 format\) | string | 
+**end\_date** |  optional  | The latest date time \(UTC\) a search should target \(ISO 8601 format\) | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS
+--------- | ---- | --------
+action\_result\.status | string | 
+action\_result\.parameter\.add\_fields | string | 
+action\_result\.parameter\.end\_date | string | 
+action\_result\.parameter\.fields | string | 
+action\_result\.parameter\.max\_results | numeric | 
+action\_result\.parameter\.offset | numeric | 
+action\_result\.parameter\.rem\_fields | string | 
+action\_result\.parameter\.search | string | 
+action\_result\.parameter\.sort | string | 
+action\_result\.parameter\.start\_date | string | 
+action\_result\.data\.\*\.attachment\_extensions | string | 
+action\_result\.data\.\*\.attachment\_filenames | string | 
+action\_result\.data\.\*\.attachment\_sha256 | string |  `sha256` 
+action\_result\.data\.\*\.attack\_types | string | 
+action\_result\.data\.\*\.authenticity | string | 
+action\_result\.data\.\*\.date | string | 
+action\_result\.data\.\*\.domain\_reputation | string | 
+action\_result\.data\.\*\.domain\_tags | string | 
+action\_result\.data\.\*\.enforcement\_action | string | 
+action\_result\.data\.\*\.enforcement\_result | string | 
+action\_result\.data\.\*\.from | string | 
+action\_result\.data\.\*\.from\_domain | string |  `domain` 
+action\_result\.data\.\*\.has\_attachment | string | 
+action\_result\.data\.\*\.id | string |  `agari internal message id` 
+action\_result\.data\.\*\.ip | string |  `ip` 
+action\_result\.data\.\*\.mail\_from\_domain | string | 
+action\_result\.data\.\*\.message\_details\_link | string |  `url` 
+action\_result\.data\.\*\.message\_id | string |  `agari global message id` 
+action\_result\.data\.\*\.message\_trust\_score | string | 
+action\_result\.data\.\*\.policy\_ids | numeric | 
+action\_result\.data\.\*\.ptr\_name | string | 
+action\_result\.data\.\*\.reply\_to | string |  `email` 
+action\_result\.data\.\*\.sbrs | string | 
+action\_result\.data\.\*\.sender\_type | string | 
+action\_result\.data\.\*\.subject | string | 
+action\_result\.data\.\*\.timestamp\_ms | string | 
+action\_result\.data\.\*\.to | string |  `email` 
+action\_result\.summary\.total\_messsages | numeric | 
+action\_result\.message | string | 
+summary\.total\_objects | numeric | 
+summary\.total\_objects\_successful | numeric |   
+
+## action: 'get message'
+Fetches a single message from Agari for the given message ID
+
+Type: **investigate**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** |  required  | Message ID | string |  `agari internal message id` 
+**rem\_fields** |  optional  | A comma\-delimited list of fields to remove from the default payload | string | 
+**add\_fields** |  optional  | A comma\-delimited list of optional fields to add to the default payload | string | 
+**fields** |  optional  | A comma\-delimited list of fields to include in the payload | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS
+--------- | ---- | --------
+action\_result\.status | string | 
+action\_result\.parameter\.add\_fields | string | 
+action\_result\.parameter\.fields | string | 
+action\_result\.parameter\.id | string |  `agari internal message id` 
+action\_result\.parameter\.rem\_fields | string | 
+action\_result\.data\.\*\.code | numeric | 
+action\_result\.data\.\*\.message\.attack\_class\.display\_name\_impostor | string | 
+action\_result\.data\.\*\.message\.attack\_class\.lookalike\_domain | string | 
+action\_result\.data\.\*\.message\.authentication\_results | string | 
+action\_result\.data\.\*\.message\.authenticity\_score | numeric | 
+action\_result\.data\.\*\.message\.date | string | 
+action\_result\.data\.\*\.message\.dkim\_d\_tag | string | 
+action\_result\.data\.\*\.message\.domain\_reputation | numeric | 
+action\_result\.data\.\*\.message\.enforcement\_action | string | 
+action\_result\.data\.\*\.message\.from | string | 
+action\_result\.data\.\*\.message\.from\_domain | string |  `domain` 
+action\_result\.data\.\*\.message\.id | string |  `agari internal message id` 
+action\_result\.data\.\*\.message\.mail\_from | string | 
+action\_result\.data\.\*\.message\.matched\_policies | string |  `agari policy name` 
+action\_result\.data\.\*\.message\.message\_id | string |  `agari global message id` 
+action\_result\.data\.\*\.message\.message\_trust\_score | numeric | 
+action\_result\.data\.\*\.message\.reply\_to | string | 
+action\_result\.data\.\*\.message\.risk\_reason | string | 
+action\_result\.data\.\*\.message\.sbrs | numeric | 
+action\_result\.data\.\*\.message\.sending\_ip\_address\.ip | string |  `ip` 
+action\_result\.data\.\*\.message\.sending\_ip\_address\.ptr\_name | string | 
+action\_result\.data\.\*\.message\.subject | string | 
+action\_result\.data\.\*\.message\.timestamp\_ms | numeric | 
+action\_result\.data\.\*\.message\.to | string |  `email` 
+action\_result\.data\.\*\.status | string | 
+action\_result\.data\.\*\.version | numeric | 
+action\_result\.summary | string | 
+action\_result\.message | string | 
+summary\.total\_objects | numeric | 
+summary\.total\_objects\_successful | numeric |   
+
+## action: 'remediate message'
+Deletes or moves a message from the inbox for the provided message ID
+
+Type: **generic**  
+Read only: **False**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** |  required  | Message ID | string |  `agari internal message id` 
+**remediation\_operation** |  required  | This parameter allows the user to move or delete the suspected message from the inbox | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS
+--------- | ---- | --------
+action\_result\.status | string | 
+action\_result\.parameter\.id | string |  `agari internal message id` 
+action\_result\.parameter\.remediation\_operation | string | 
+action\_result\.data\.\*\.code | numeric | 
+action\_result\.data\.\*\.enforcement\.enforce | string | 
+action\_result\.data\.\*\.enforcement\.success | boolean | 
+action\_result\.data\.\*\.status | string | 
+action\_result\.data\.\*\.version | numeric | 
+action\_result\.summary | string | 
+action\_result\.message | string | 
+summary\.total\_objects | numeric | 
+summary\.total\_objects\_successful | numeric |   
+
+## action: 'on poll'
+Action handler for the on poll ingest functionality
+
+Type: **ingest**  
+Read only: **True**
+
+This action ingests policy events and associated messages from Agari\.
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**container\_count** |  optional  | Maximum number of containers to ingest | numeric | 
+**start\_time** |  optional  | Parameter ignored in this app | numeric | 
+**end\_time** |  optional  | Parameter ignored in this app | numeric | 
+**artifact\_count** |  optional  | Parameter ignored in this app | numeric | 
+
+#### Action Output
+No Output
