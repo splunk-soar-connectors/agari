@@ -1,6 +1,6 @@
 # File: __init__.py
 #
-# Copyright (c) Agari, 2021
+# Copyright (c) Agari, 2021-2026
 #
 # This unpublished material is proprietary to Agari.
 # All rights reserved. The methods and

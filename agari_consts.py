@@ -1,6 +1,6 @@
 # File: agari_consts.py
 #
-# Copyright (c) Agari, 2021
+# Copyright (c) Agari, 2021-2026
 #
 # This unpublished material is proprietary to Agari.
 # All rights reserved. The methods and
@@ -19,24 +19,24 @@ AGARI_AUTHORIZATION_HEADER = "Bearer {token}"
 AGARI_DEFAULT_LIMIT = 200
 AGARI_DEFAULT_OFFSET = 0
 AGARI_DEFAULT_MAX_RESULTS = 100
-AGARI_API_SUPPORT_DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.000-00:00'
+AGARI_API_SUPPORT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.000-00:00"
 AGARI_DEFAULT_NUM_RETRIES = 5
 AGARI_DEFAULT_MAX_WORKERS = 1
 AGARI_DEFAULT_BACKOFF_FACTOR = 0.3
 AGARI_DEFAULT_UPDATE_STATE_AFTER = 1
 AGARI_DEFAULT_DAYS = 14
 AGARI_MAX_DAYS = 14
-AGARI_LAST_INGESTED_POLICY_EVENT_DATE = 'last_ingested_policy_event_date'
-AGARI_LAST_INGESTED_POLICY_EVENT_ID = 'last_ingested_policy_event_id'
+AGARI_LAST_INGESTED_POLICY_EVENT_DATE = "last_ingested_policy_event_date"
+AGARI_LAST_INGESTED_POLICY_EVENT_ID = "last_ingested_policy_event_id"
 
 # Endpoints
 AGARI_BASE_URL = "https://api.agari.com/v1/ep"
 AGARI_TOKEN_ENDPOINT = "/token"
-AGARI_LIST_POLICY_EVENTS_ENDPOINT = '/policy_events'
-AGARI_LIST_MESSAGES_ENDPOINT = '/messages'
-AGARI_GET_POLICY_EVENT_ENDPOINT = '/policy_events/{id}'
-AGARI_GET_MESSAGE_ENDPOINT = '/messages/{id}'
-AGARI_REMEDIATE_MESSAGE_ENDPOINT = '/messages/{id}/remediate'
+AGARI_LIST_POLICY_EVENTS_ENDPOINT = "/policy_events"
+AGARI_LIST_MESSAGES_ENDPOINT = "/messages"
+AGARI_GET_POLICY_EVENT_ENDPOINT = "/policy_events/{id}"
+AGARI_GET_MESSAGE_ENDPOINT = "/messages/{id}"
+AGARI_REMEDIATE_MESSAGE_ENDPOINT = "/messages/{id}/remediate"
 
 # Constants relating to 'get_error_message_from_exception'
 ERR_CODE_MSG = "Error code unavailable"
@@ -45,11 +45,17 @@ PARSE_ERR_MSG = "Unable to parse the error message. Please check the asset confi
 
 # Constants relating to 'validate_integer'
 AGARI_VALID_INT_MSG = "Please provide a valid integer value in the '{param}' parameter"
-AGARI_NON_NEG_NON_ZERO_INT_MSG = "Please provide a valid non-zero positive integer value in '{param}' parameter"
-AGARI_NON_NEG_INT_MSG = "Please provide a valid non-negative integer value in the '{param}' parameter"
+AGARI_NON_NEG_NON_ZERO_INT_MSG = (
+    "Please provide a valid non-zero positive integer value in '{param}' parameter"
+)
+AGARI_NON_NEG_INT_MSG = (
+    "Please provide a valid non-negative integer value in the '{param}' parameter"
+)
 
 # Constants relating to error messages
-AGARI_ERR_EMPTY_RESPONSE = "Status Code {code}. Empty response and no information in the header."
+AGARI_ERR_EMPTY_RESPONSE = (
+    "Status Code {code}. Empty response and no information in the header."
+)
 AGARI_UNABLE_TO_PARSE_ERR_DETAIL = "Cannot parse error details"
 AGARI_ERR_UNABLE_TO_PARSE_JSON_RESPONSE = "Unable to parse response as JSON. {error}"
 AGARI_ERR_CONNECTING_TO_SERVER = "Error connecting to server. Details: {error}"
@@ -75,9 +81,11 @@ AGARI_SUCC_REMEDIATE_MESSAGE = "Message remediated successfully"
 AGARI_INGESTION_STATUS_UPDATED = "Ingestion time and policy event ID updated"
 
 # Constants relating to value list
-AGARI_SORT_VALUE_LIST = ['ASC', 'DESC']
-AGARI_POLICY_ACTION_VALUE_LIST = ['deliver', 'move', 'delete', 'inbox', 'none', 'all']
-AGARI_EXCLUDE_ALERT_TYPES_VALUE_LIST = ['MessageAlert', 'SystemAlert', 'None']
-AGARI_POLICY_ENABLED_VALUE_LIST = ['True', 'False', 'All']
-AGARI_ERR_INVALID_SORT_TYPE = "Please provide a valid sort type. Expected values are 'ASC' or 'DESC'."
+AGARI_SORT_VALUE_LIST = ["ASC", "DESC"]
+AGARI_POLICY_ACTION_VALUE_LIST = ["deliver", "move", "delete", "inbox", "none", "all"]
+AGARI_EXCLUDE_ALERT_TYPES_VALUE_LIST = ["MessageAlert", "SystemAlert", "None"]
+AGARI_POLICY_ENABLED_VALUE_LIST = ["True", "False", "All"]
+AGARI_ERR_INVALID_SORT_TYPE = (
+    "Please provide a valid sort type. Expected values are 'ASC' or 'DESC'."
+)
 AGARI_ERR_INVALID_VALUE_LIST_PARAMETER = "Please provide a valid value in the '{param}' parameter. Expected values are '{value_list}'."
