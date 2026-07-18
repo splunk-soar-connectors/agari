@@ -127,7 +127,7 @@
                                         {% if data.id %}
                                             <a class="no-word-wrap"
                                                href="javascript:;"
-                                               onclick="context_menu(this, [{'contains': ['agari internal message id'], 'value':'{{ data.id }}' }], 0, {{ container.id }}, null, false);">
+                                               onclick="context_menu(this, [{'contains': ['agari internal message id'], 'value':'{{ data.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                 {{ data.id }}
                                                 &nbsp;
                                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -141,7 +141,7 @@
                                         {% if data.message_id %}
                                             <a class="no-word-wrap"
                                                href="javascript:;"
-                                               onclick="context_menu(this, [{'contains': ['agari global message id'], 'value':'{{ data.message_id }}' }], 0, {{ container.id }}, null, false);">
+                                               onclick="context_menu(this, [{'contains': ['agari global message id'], 'value':'{{ data.message_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                 {{ data.message_id }}
                                                 &nbsp;
                                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -155,7 +155,7 @@
                                         {% if data.to %}
                                             <a class="no-word-wrap"
                                                href="javascript:;"
-                                               onclick="context_menu(this, [{'contains': ['email'], 'value':'{{ data.to }}' }], 0, {{ container.id }}, null, false);">
+                                               onclick="context_menu(this, [{'contains': ['email'], 'value':'{{ data.to|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                 {{ data.to }}
                                                 &nbsp;
                                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -217,7 +217,7 @@
                                                 <li class="no-word-wrap">
                                                     <a class="no-word-wrap"
                                                        href="javascript:;"
-                                                       onclick="context_menu(this, [{'contains': ['sha256'], 'value':'{{ value }}' }], 0, {{ container.id }}, null, false);">
+                                                       onclick="context_menu(this, [{'contains': ['sha256'], 'value':'{{ value|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                         {{ value }}
                                                         &nbsp;
                                                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>

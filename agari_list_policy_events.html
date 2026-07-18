@@ -124,7 +124,7 @@
                                         {% if data.id %}
                                             <a class="no-word-wrap"
                                                href="javascript:;"
-                                               onclick="context_menu(this, [{'contains': ['agari policy event id'], 'value':'{{ data.id }}' }], 0, {{ container.id }}, null, false);">
+                                               onclick="context_menu(this, [{'contains': ['agari policy event id'], 'value':'{{ data.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                 {{ data.id }}
                                                 &nbsp;
                                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -138,7 +138,7 @@
                                         {% if data.alert_definition_name %}
                                             <a class="no-word-wrap"
                                                href="javascript:;"
-                                               onclick="context_menu(this, [{'contains': ['agari policy name'], 'value':'{{ data.alert_definition_name }}' }], 0, {{ container.id }}, null, false);">
+                                               onclick="context_menu(this, [{'contains': ['agari policy name'], 'value':'{{ data.alert_definition_name|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                                 {{ data.alert_definition_name }}
                                                 &nbsp;
                                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
