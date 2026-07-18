@@ -28,6 +28,7 @@ from dateutil.parser import isoparse
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
 from bs4 import BeautifulSoup
+from urllib.parse import quote
 
 
 class RetVal(tuple):
@@ -51,6 +52,11 @@ class AgariConnector(BaseConnector):
         self._client_id = None
         self._client_secret = None
         self._current_utc_time = None
+
+    @staticmethod
+    def _encode_path_segment(value):
+        """Encode an opaque API identifier as exactly one URL path segment."""
+        return quote(str(value), safe="")
 
     def _get_error_message_from_exception(self, e):
         """
@@ -930,7 +936,9 @@ class AgariConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call_helper(
             action_result,
-            AGARI_GET_POLICY_EVENT_ENDPOINT.format(id=policy_event_id),
+            AGARI_GET_POLICY_EVENT_ENDPOINT.format(
+                id=self._encode_path_segment(policy_event_id)
+            ),
             headers=self._headers,
             params=updated_params,
         )
@@ -970,7 +978,7 @@ class AgariConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call_helper(
             action_result,
-            AGARI_GET_MESSAGE_ENDPOINT.format(id=message_id),
+            AGARI_GET_MESSAGE_ENDPOINT.format(id=self._encode_path_segment(message_id)),
             headers=self._headers,
             params=updated_params,
         )
@@ -1000,7 +1008,9 @@ class AgariConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call_helper(
             action_result,
-            AGARI_REMEDIATE_MESSAGE_ENDPOINT.format(id=message_id),
+            AGARI_REMEDIATE_MESSAGE_ENDPOINT.format(
+                id=self._encode_path_segment(message_id)
+            ),
             headers=self._headers,
             data=payload,
             method="post",
@@ -1277,7 +1287,9 @@ class AgariConnector(BaseConnector):
         try:
             ret_val, policy_event = self._make_rest_call_helper(
                 action_result,
-                AGARI_GET_POLICY_EVENT_ENDPOINT.format(id=policy_event_id),
+                AGARI_GET_POLICY_EVENT_ENDPOINT.format(
+                    id=self._encode_path_segment(policy_event_id)
+                ),
                 headers=self._headers,
             )
             if phantom.is_fail(ret_val):
@@ -1302,7 +1314,9 @@ class AgariConnector(BaseConnector):
 
             ret_val, message = self._make_rest_call_helper(
                 action_result,
-                AGARI_GET_MESSAGE_ENDPOINT.format(id=message_id),
+                AGARI_GET_MESSAGE_ENDPOINT.format(
+                    id=self._encode_path_segment(message_id)
+                ),
                 headers=self._headers,
                 params=message_params,
             )
@@ -1374,7 +1388,9 @@ class AgariConnector(BaseConnector):
             try:
                 ret_val, policy_event = self._make_rest_call_helper(
                     action_result,
-                    AGARI_GET_POLICY_EVENT_ENDPOINT.format(id=policy_event_id),
+                    AGARI_GET_POLICY_EVENT_ENDPOINT.format(
+                        id=self._encode_path_segment(policy_event_id)
+                    ),
                     headers=self._headers,
                 )
                 if phantom.is_fail(ret_val):
@@ -1390,7 +1406,9 @@ class AgariConnector(BaseConnector):
 
                 ret_val, _ = self._make_rest_call_helper(
                     action_result,
-                    AGARI_GET_MESSAGE_ENDPOINT.format(id=message_id),
+                    AGARI_GET_MESSAGE_ENDPOINT.format(
+                        id=self._encode_path_segment(message_id)
+                    ),
                     headers=self._headers,
                     params=message_params,
                 )
