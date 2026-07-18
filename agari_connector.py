@@ -19,6 +19,7 @@ from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 
 from agari_consts import *
+import encryption_helper
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -697,10 +698,24 @@ class AgariConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             # Failed to generate new token. Delete the previously generated token in case the credentials are changed.
             self._state.pop(AGARI_OAUTH_TOKEN_STRING, {})
+            self._state.pop(AGARI_STATE_TOKEN_ENCRYPTED, None)
             return action_result.get_status()
 
-        self._state[AGARI_OAUTH_TOKEN_STRING] = resp_json
         self._access_token = resp_json[AGARI_OAUTH_ACCESS_TOKEN_STRING]
+        try:
+            encrypted_token = encryption_helper.encrypt(
+                self._access_token, self.get_asset_id()
+            )
+        except Exception as e:
+            self.debug_print(AGARI_STATE_TOKEN_ENCRYPTION_ERR, e)
+            return action_result.set_status(
+                phantom.APP_ERROR, AGARI_STATE_TOKEN_ENCRYPTION_ERR
+            )
+
+        token_state = dict(resp_json)
+        token_state[AGARI_OAUTH_ACCESS_TOKEN_STRING] = encrypted_token
+        self._state[AGARI_OAUTH_TOKEN_STRING] = token_state
+        self._state[AGARI_STATE_TOKEN_ENCRYPTED] = True
         self.save_state(self._state)
 
         return action_result.set_status(phantom.APP_SUCCESS)
@@ -1736,9 +1751,38 @@ class AgariConnector(BaseConnector):
 
         self._client_id = config.get("client_id")
         self._client_secret = config.get("client_secret")
-        self._access_token = self._state.get(AGARI_OAUTH_TOKEN_STRING, {}).get(
+        stored_token = self._state.get(AGARI_OAUTH_TOKEN_STRING, {}).get(
             AGARI_OAUTH_ACCESS_TOKEN_STRING
         )
+        if stored_token and self._state.get(AGARI_STATE_TOKEN_ENCRYPTED):
+            try:
+                self._access_token = encryption_helper.decrypt(
+                    stored_token, self.get_asset_id()
+                )
+            except Exception as e:
+                self.debug_print(
+                    "Unable to decrypt the cached OAuth access token; requesting a new token",
+                    e,
+                )
+                self._state.pop(AGARI_OAUTH_TOKEN_STRING, None)
+                self._state.pop(AGARI_STATE_TOKEN_ENCRYPTED, None)
+        elif stored_token:
+            # Migrate legacy cleartext state before the connector handles an action.
+            self._access_token = stored_token
+            try:
+                encrypted_token = encryption_helper.encrypt(
+                    self._access_token, self.get_asset_id()
+                )
+            except Exception as e:
+                self.debug_print(AGARI_STATE_TOKEN_ENCRYPTION_ERR, e)
+                return self.set_status(
+                    phantom.APP_ERROR, AGARI_STATE_TOKEN_ENCRYPTION_ERR
+                )
+            self._state[AGARI_OAUTH_TOKEN_STRING][AGARI_OAUTH_ACCESS_TOKEN_STRING] = (
+                encrypted_token
+            )
+            self._state[AGARI_STATE_TOKEN_ENCRYPTED] = True
+            self.save_state(self._state)
         self._current_utc_time = datetime.utcnow()
 
         ret_val, self._max_workers = self._validate_integer(
