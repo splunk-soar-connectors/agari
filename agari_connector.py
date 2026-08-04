@@ -57,7 +57,10 @@ class AgariConnector(BaseConnector):
     @staticmethod
     def _encode_path_segment(value):
         """Encode an opaque API identifier as exactly one URL path segment."""
-        return quote(str(value), safe="")
+        encoded = quote(str(value), safe="")
+        if encoded in {".", ".."}:
+            raise ValueError("API identifier must not be a dot path segment")
+        return encoded
 
     def _get_error_message_from_exception(self, e):
         """
@@ -979,6 +982,10 @@ class AgariConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         message_id = param["id"]
+        try:
+            encoded_message_id = self._encode_path_segment(message_id)
+        except ValueError as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         ret_val, fields, add_fields, rem_fields = self._validate_fields_parameters(
             action_result, param
@@ -993,7 +1000,7 @@ class AgariConnector(BaseConnector):
         # make rest call
         ret_val, response = self._make_rest_call_helper(
             action_result,
-            AGARI_GET_MESSAGE_ENDPOINT.format(id=self._encode_path_segment(message_id)),
+            AGARI_GET_MESSAGE_ENDPOINT.format(id=encoded_message_id),
             headers=self._headers,
             params=updated_params,
         )
@@ -1017,15 +1024,17 @@ class AgariConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         message_id = param["id"]
+        try:
+            encoded_message_id = self._encode_path_segment(message_id)
+        except ValueError as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         payload = {"operation": param["remediation_operation"]}
 
         # make rest call
         ret_val, response = self._make_rest_call_helper(
             action_result,
-            AGARI_REMEDIATE_MESSAGE_ENDPOINT.format(
-                id=self._encode_path_segment(message_id)
-            ),
+            AGARI_REMEDIATE_MESSAGE_ENDPOINT.format(id=encoded_message_id),
             headers=self._headers,
             data=payload,
             method="post",
