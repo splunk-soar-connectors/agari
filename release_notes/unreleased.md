@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Reject exact dot path segments in Agari API identifiers.
